@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Product Dashboard</title>
+</head>
+<body>
+    <h2>All Products</h2>
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Discount Price</th>
+            <th>Variants</th>
+            <th>Actions</th>
+        </tr>
+        {% for product in products %}
+        <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ product.price }}</td>
+            <td>{{ product.discount_price or '-' }}</td>
+            <td>
+                {% if product.variants %}
+                    <ul>
+                    {% for v in product.variants %}
+                        <li>{{ v.name }}: {{ v.price }} {% if v.discountprice %}(Discount: {{ v.discountprice }}){% endif %}</li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td>
+                <form action="/admin/delete-product/{{ product.id }}" method="post" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+                <form action="/admin/apply-discount" method="post" style="display:inline;">
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                    <input type="number" name="discount_percent" placeholder="Discount %" required>
+                    <input type="text" name="variant_name" placeholder="Variant Name (optional)">
+                    <button type="submit">Apply Discount</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
