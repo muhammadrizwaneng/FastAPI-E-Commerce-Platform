@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import APIRouter, Body, HTTPException, Path
-from database.database import add_product, apply_discount, get_all_products, get_discounted_products, get_product_by_id, get_products_by_category, update_product, delete_product
+from database.database import add_product, add_to_recently_viewed, apply_discount, clear_recently_viewed, get_all_products, get_discounted_products, get_product_by_id, get_products_by_category, get_recently_viewed, update_product, delete_product
 from models.product import Product
 # from schemas.student import Response, UpdateStudentModel
 
@@ -55,7 +55,9 @@ async def read_product(product_id: str):
 
 @router.put("/updateProduct/{product_id}", response_model=Product)
 async def update_product_route(product_id: str, product: Product):
+    print("product_id",product_id)
     updated_product = await update_product(product_id, product.dict(exclude_unset=True))
+    print("updated_product",updated_product)
     if not updated_product:
         raise HTTPException(status_code=404, detail="Product not found")
     return updated_product
@@ -95,3 +97,34 @@ async def list_discounted_products():
     Get all products that have discounts applied (product-level or variant-level).
     """
     return await get_discounted_products()
+
+
+
+@router.post("/recently-viewed/add")
+async def add_recently_viewed(
+    user_id: str = Body(...),
+    product_id: str = Body(...)
+):
+    """Add product to recently viewed (max 10, newest first)"""
+    result = await add_to_recently_viewed(user_id, product_id)
+    return {
+        "success": True,
+        "message": "Added to recently viewed",
+        "product_ids": [str(pid) for pid in result.product_ids]
+    }
+
+@router.get("/recently-viewed/{user_id}")
+async def get_user_recently_viewed(user_id: str):
+    """Get user's recently viewed products"""
+    recently_viewed = await get_recently_viewed(user_id)
+    if not recently_viewed:
+        return {"product_ids": []}
+    return {
+        "product_ids": [str(pid) for pid in recently_viewed.product_ids]
+    }
+
+@router.delete("/recently-viewed/{user_id}")
+async def clear_user_recently_viewed(user_id: str):
+    """Clear user's recently viewed list"""
+    await clear_recently_viewed(user_id)
+    return {"success": True, "message": "Recently viewed cleared"}

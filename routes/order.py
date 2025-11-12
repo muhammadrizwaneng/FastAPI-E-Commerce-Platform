@@ -1,18 +1,18 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Path, status
 from models.order import OrderCreate, Order, OrderStatus
 from datetime import datetime
 import uuid
-from database.database import add_order, get_product_by_id, get_order_by_id
+from database.database import add_order, get_product_by_id, get_order_by_id, update_order_status
 
 router = APIRouter()
 
 @router.post("/create_order", response_model=Order)
 async def create_order(order: OrderCreate, user_id: str):
+
     # Calculate total amount
     total_amount = 0
     for item in order.items:
         product = await get_product_by_id(item.product_id)
-        print("product---------",product)
         if not product:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -45,22 +45,56 @@ async def create_order(order: OrderCreate, user_id: str):
             total_amount += matching_variant.price * item.quantity
     
     order_dict = order.dict()
-    order_dict["id"] = str(uuid.uuid4())
+    # order_dict["id"] = str(uuid.uuid4())
     order_dict["user_id"] = user_id
     order_dict["total_amount"] = total_amount
     order_dict["status"] = OrderStatus.PENDING
     order_dict["created_at"] = datetime.utcnow()
     order_dict["updated_at"] = datetime.utcnow()
     
-    await add_order(order_dict)
-    return order_dict
+    created_order = await add_order(order_dict)
+    return created_order
 
 @router.get("/get_order/{order_id}", response_model=Order)
 async def get_order(order_id: str):
-    order = await get_order_by_id({"id": order_id})
+    order = await get_order_by_id(order_id)
     if not order:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Order not found"
         )
     return order
+
+
+
+@router.patch("/orderStatus/{order_id}/processing")
+async def mark_order_processing(order_id: str = Path(...)):
+    """Mark order as processing"""
+    result = await update_order_status(order_id, "processing")
+    if not result:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return {"status": "processing", "order_id": order_id, "success": True}
+
+@router.patch("/orderStatus/{order_id}/shipped")
+async def mark_order_shipped(order_id: str = Path(...)):
+    """Mark order as shipped"""
+    result = await update_order_status(order_id, "shipped")
+    if not result:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return {"status": "shipped", "order_id": order_id, "success": True}
+
+@router.patch("/orderStatus/{order_id}/delivered")
+async def mark_order_delivered(order_id: str = Path(...)):
+    """Mark order as delivered"""
+    result = await update_order_status(order_id, "delivered")
+    if not result:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return {"status": "delivered", "order_id": order_id, "success": True}
+
+@router.patch("/orderStatus/{order_id}/cancelled")
+async def mark_order_cancelled(order_id: str = Path(...)):
+    """Mark order as cancelled"""
+    result = await update_order_status(order_id, "cancelled")
+    if not result:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return {"status": "cancelled", "order_id": order_id, "success": True}

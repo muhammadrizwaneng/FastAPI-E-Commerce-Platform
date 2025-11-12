@@ -593,6 +593,7 @@ def get_bert_answer(question, context, tokenizer, model):
 @router.get('/customWillTemplateOfMarriedPerson')
 def customWillTemplateOfMarriedPerson():
   
+    data = [
         {"answer": "John Smith"},
         {"answer": "123 Main St."},
         {"answer": "Anytown"},

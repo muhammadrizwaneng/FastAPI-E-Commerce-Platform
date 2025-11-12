@@ -10,22 +10,15 @@ class RoleEnum(str, Enum):
 
 
 class User(Document):
+    name: Optional[str] = None
     username: str
     email: EmailStr
-    password: str 
-    role: RoleEnum = RoleEnum.user 
+    password: str
+    phoneNumber: Optional[str] = None
+    profileImage: Optional[str] = None
+    country: Optional[dict] = None   # or create Country model & use Country
+    role: RoleEnum = RoleEnum.user
     verificationCode: Optional[int] = None
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "username": "Saar",
-                "email": "soleberry012@gmail.com",
-                "password": "Changeme123",
-                "role":"user",
-                "verificationCode":1234
-            }
-        }
 
     class Settings:
         name = "user"
@@ -46,17 +39,30 @@ class UserSignIn(BaseModel):
             }
         }
 
+class Country(BaseModel):
+    code: Optional[str] = None
+    callingCode: Optional[str] = None
+    flag: Optional[str] = None
+
 class UserData(BaseModel):
-    username: str
+    username: Optional[str] = None
+    name: Optional[str] = None
     email: EmailStr
-    password: str
-    role: RoleEnum = RoleEnum.user 
+    phoneNumber: Optional[str] = None
+    profileImage: Optional[str] = None  # stored URL from Cloudinary
+    country: Optional[Country] = None
+    role: RoleEnum = RoleEnum.user
 
     class Config:
         json_schema_extra = {
             "example": {
-                "fullname": "Abdulazeez Abdulazeez Adeshina",
-                "email": "abdul@youngest.dev",
+                "name": "Rizwan",
+                "username": "rizwan123",
+                "email": "email@gmail.com",
+                "phoneNumber": "03000795296",
+                "profileImage": "https://res.cloudinary.com/yourcloud/image/upload/v.../profile.jpg",
+                "country": { "code": "PK", "callingCode": "92", "flag": "🇵🇰" },
+                "role": "user"
             }
         }
 

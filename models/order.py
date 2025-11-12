@@ -21,7 +21,6 @@ class OrderCreate(BaseModel):
     items: List[OrderItem]
     
 class Order(Document):
-    id: str
     user_id: str
     items: List[OrderItem]
     total_amount: float

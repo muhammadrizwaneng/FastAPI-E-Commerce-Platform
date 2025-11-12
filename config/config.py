@@ -9,6 +9,10 @@ import models as models
 class Settings(BaseSettings):
     # database configurations
     DATABASE_URL: Optional[str] = None
+    cloudinary_cloud_name: str | None = None
+    cloudinary_api_key: str | None = None
+    cloudinary_api_secret: str | None = None
+    
 
     # JWT
     secret_key: str = "secret"
