@@ -1,4 +1,4 @@
-version: "3"
+version: "3.9"
 
 services:
   web:
@@ -6,15 +6,26 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - .env.docker-compose
+      - .env.dev
+    environment:
+      - DATABASE_URL=mongodb+srv://muhammadrizwaneng:dev@sso-cluster.7bjz3mn.mongodb.net/e-commerce
+      - secret_key=guiyfgc837tgf3iw87-012389764
+      - CLOUDINARY_CLOUD_NAME=dnrqj5cgh
+      - CLOUDINARY_API_KEY=844539458168897
+      - CLOUDINARY_API_SECRET=X6bTL_duujuxMgIAzvH6tESdHTU
+    depends_on:
+      - mongodb
+    restart: always
 
   mongodb:
     image: bitnami/mongodb:latest
     ports:
-      - "27017"
+      - "27017:27017"
+    environment:
+      - MONGODB_ROOT_PASSWORD=rootpassword
     volumes:
-      - data:/bitnami/mongodb
-
+      - mongodb_data:/bitnami/mongodb
+    restart: always
 
 volumes:
-  data:
+  mongodb_data:

@@ -1,12 +1,17 @@
-FROM python:3.8
+FROM python:3.10-slim
+
 WORKDIR /app
 
-ADD requirements.txt /app/requirements.txt
+# Copy requirements first
+COPY requirements.txt .
 
-RUN pip install --upgrade -r requirements.txt
+# Install dependencies with better error handling
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 8080
 
-COPY ./ /app
+# Copy app code
+COPY . .
 
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]
