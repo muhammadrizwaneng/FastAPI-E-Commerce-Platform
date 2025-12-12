@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     # JWT
     secret_key: str = "secret"
     algorithm: str = "HS256"
+    
+    # Payment
+    stripe_secret_key: Optional[str] = None
 
     class Config:
         env_file = ".env.dev"

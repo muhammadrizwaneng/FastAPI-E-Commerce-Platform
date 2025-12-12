@@ -1,9 +1,8 @@
+from config.config import Settings
 import stripe
-import os
-
 # Configure Stripe
 # In production, this MUST be in .env
-STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+STRIPE_SECRET_KEY = Settings().stripe_secret_key
 if not STRIPE_SECRET_KEY:
     # Fallback for dev or raise warning
     print("Warning: STRIPE_SECRET_KEY not set. Payments will fail.")
