@@ -321,3 +321,35 @@ def get_shopping_assistant_response(user_query: str):
         # This will catch the 429 error, which should disappear after your quota resets/is increased.
         return f"I'm having trouble thinking right now. Error: {str(e)}"
 
+
+def generate_interview_question_gemini(skill: str, strength_context: str = "") -> str:
+    """
+    Generates a specific, technical interview question for a given skill using Gemini.
+    """
+    try:
+        model = genai.GenerativeModel('gemini-2.5-flash')
+        
+        prompt = f"""
+        You are a technical interviewer. Generate ONE specific, open-ended, technical interview question about {skill}.
+        
+        Requirements:
+        - The question should test deep understanding and practical application.
+        - It should NOT be a simple "What is X?" question.
+        - It should be suitable for a candidate who has {skill} listed as a strength.
+        - {f"Context: {strength_context}" if strength_context else ""}
+        - OUTPUT ONLY THE QUESTION. Do not add any introductory or concluding text (like "Here is a question:" or "Question:").
+        """
+        
+        response = model.generate_content(prompt)
+        question = response.text.strip()
+        
+        # Basic cleanup if the model acts up
+        if question.lower().startswith("question:"):
+            question = question[9:].strip()
+            
+        return question
+    except Exception as e:
+        print(f"Gemini Error generating question for {skill}: {e}")
+        return f"Can you describe a challenging problem you solved using {skill}?"
+
+

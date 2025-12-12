@@ -25,6 +25,7 @@ from auth.jwt_bearer import JWTBearer
 import asyncio
 import aiofiles
 from concurrent.futures import ThreadPoolExecutor
+from services.ai_service import generate_interview_question_gemini
 
 # Download required NLTK data
 nltk.download('punkt')
@@ -203,6 +204,45 @@ class MLModels:
             return 0.0
 
     def generate_questions(self, jd_text: str, resume_text: str, num_questions: int = 5) -> List[str]:
+        """Generate interview questions based on candidate's strengths and skills using AI."""
+        try:
+            # Extract skills from both texts
+            jd_skills = set(self.extract_skills(jd_text))
+            resume_skills = set(self.extract_skills(resume_text))
+            
+            # Get matching skills (strengths)
+            strengths = list(jd_skills.intersection(resume_skills))
+            
+            # If no strengths found, return empty list
+            if not strengths:
+                return []
+                
+            # Get context from resume (first 1000 chars) for better questions
+            context = ' '.join(resume_text[:1000].split())
+            
+            questions = []
+            
+            # Generate questions for each strength
+            # Shuffle strengths to get variety if we have more strengths than needed
+            import random
+            random.shuffle(strengths)
+            
+            for skill in strengths[:num_questions]:
+                try:
+                    question = generate_interview_question_gemini(skill, context)
+                    questions.append(question)
+                except Exception as e:
+                    print(f"Error generating question for {skill}: {e}")
+                    questions.append(f"Can you describe a challenging {skill} problem you've solved and how you approached it?")
+
+            return questions[:num_questions]
+
+        except Exception as e:
+            print(f"Error in generate_questions: {e}")
+            # Fallback to simple questions if there's an error
+            return [f"Can you tell me about your experience with {skill}?" for skill in strengths[:num_questions]] if 'strengths' in locals() else []
+
+    def generate_questions1(self, jd_text: str, resume_text: str, num_questions: int = 5) -> List[str]:
         """Generate interview questions based on candidate's strengths and skills."""
         # Extract skills from both texts
         jd_skills = set(self.extract_skills(jd_text))
