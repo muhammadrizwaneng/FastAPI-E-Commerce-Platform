@@ -16,6 +16,7 @@ from routes.aiapi import router as AIRouter
 from routes.review import router as ReviewRouter
 from routes.analytics import router as AnalyticsRouter
 from routes.ai_shopping import router as AIShoppingRouter
+from routes.recruitment_buddy import router as RecruitmentBuddyRouter
 from fastapi.middleware.cors import CORSMiddleware
 # from routes.seed import router as SeedRouter
 
@@ -63,5 +64,6 @@ app.include_router(AIRouter, tags=["AI"], prefix="/ai")
 app.include_router(ReviewRouter, tags=["Review"], prefix="/reviews")
 app.include_router(AnalyticsRouter, tags=["Analytics"], prefix="/analytics")
 app.include_router(AIShoppingRouter, tags=["AI Assistant"], prefix="/ai_shopping")
+app.include_router(RecruitmentBuddyRouter, tags=["Recruitment Buddy"], prefix="/recruitment")
 
 # app.include_router(SeedRouter, tags=["Seed"], prefix="/seed")
