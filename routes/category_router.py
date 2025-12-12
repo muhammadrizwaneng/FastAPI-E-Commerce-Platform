@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from database.database import get_categories_with_product_count, seed_categories, get_all_categories
+from services.category import get_categories_with_product_count, seed_categories, get_all_categories
 
 router = APIRouter()
 

@@ -3,7 +3,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from passlib.context import CryptContext
 from auth.jwt_handler import sign_jwt
-from database.database import add_user, find_user_by_email, find_user_by_email_code, user_update_password  
+from services.user import add_user, find_user_by_email, find_user_by_email_code, user_update_password  
 from models.user import ForgotPasswordRequest, ForgotPasswordResponse, ResetPasswordRequest, ResetPasswordResponse, User, VerifyPasswordRequest, VerifytPasswordResponse
 from models.user import UserData, UserSignIn
 import random

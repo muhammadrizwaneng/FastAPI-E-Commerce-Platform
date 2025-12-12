@@ -1,4 +1,4 @@
-from fastapi import Request, HTTPException
+from fastapi import Request, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from .jwt_handler import decode_jwt
@@ -36,3 +36,10 @@ class JWTBearer(HTTPBearer):
             return credentials.credentials
         else:
             raise HTTPException(status_code=403, detail="Invalid authorization token")
+
+
+async def get_current_user(token: str = Depends(JWTBearer())):
+    decoded = decode_jwt(token)
+    if not decoded:
+        raise HTTPException(status_code=403, detail="Invalid token or expired token")
+    return decoded["user_id"]

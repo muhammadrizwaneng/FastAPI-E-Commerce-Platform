@@ -3,7 +3,7 @@ from fastapi.encoders import jsonable_encoder
 from passlib.context import CryptContext
 
 from auth.jwt_handler import sign_jwt
-from database.database import add_admin
+from services.user import add_admin
 from models.admin import Admin
 from schemas.admin import AdminData, AdminSignIn
 

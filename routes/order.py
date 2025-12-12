@@ -2,12 +2,18 @@ from fastapi import APIRouter, HTTPException, Path, status
 from models.order import OrderCreate, Order, OrderStatus
 from datetime import datetime
 import uuid
-from database.database import add_order, get_product_by_id, get_order_by_id, update_order_status
+from services.order import add_order, get_order_by_id, update_order_status
+from services.product import get_product_by_id
 
 router = APIRouter()
 
+from auth.jwt_bearer import get_current_user
+from fastapi import APIRouter, HTTPException, Path, status, Depends
+
+# ... (existing imports, but I'll be careful to just add imports and change the function signature)
+
 @router.post("/create_order", response_model=Order)
-async def create_order(order: OrderCreate, user_id: str):
+async def create_order(order: OrderCreate, user_id: str = Depends(get_current_user)):
 
     # Calculate total amount
     total_amount = 0

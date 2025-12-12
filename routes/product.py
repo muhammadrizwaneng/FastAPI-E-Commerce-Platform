@@ -1,6 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Body, HTTPException, Path
-from database.database import add_product, add_to_recently_viewed, apply_discount, clear_recently_viewed, get_all_products, get_discounted_products, get_product_by_id, get_products_by_category, get_recently_viewed, update_product, delete_product
+from services.product import add_product, apply_discount, get_all_products, get_discounted_products, get_product_by_id, get_products_by_category, update_product, delete_product
+from services.recently_viewed import add_to_recently_viewed, clear_recently_viewed, get_recently_viewed
 from models.product import Product
 # from schemas.student import Response, UpdateStudentModel
 

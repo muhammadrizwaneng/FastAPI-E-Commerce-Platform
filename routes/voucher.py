@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Body, HTTPException
-from database.database import _compute_discount_amount, choose_best_voucher, apply_voucher_to_order, get_voucher_by_code
+from services.order import _compute_discount_amount, choose_best_voucher, apply_voucher_to_order, get_voucher_by_code
+from database.database import find_applicable_vouchers_for_user # Will update this later or now if possible
 from typing import Optional
 
 router = APIRouter()
@@ -26,7 +27,7 @@ async def validate_voucher(user_id: str = Body(...), voucher_code: str = Body(..
     if not v:
         raise HTTPException(status_code=404, detail="Voucher not found or inactive")
     # reuse database logic for eligibility
-    from database.database import find_applicable_vouchers_for_user
+    from services.order import find_applicable_vouchers_for_user
     applicable = await find_applicable_vouchers_for_user(user_id, order_total)
     codes = [x.code for x in applicable]
     if v.code not in codes:
