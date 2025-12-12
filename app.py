@@ -9,6 +9,7 @@ from routes.order import router as OrderRouter
 # from routes.aiapi import router as AIRouter
 from routes.category_router import router as CategoryRouter
 from routes.wishlist_cart import router as WishlistCartRouter
+from routes.voucher import router as VoucherRouter
 from fastapi.middleware.cors import CORSMiddleware
 # from routes.seed import router as SeedRouter
 
@@ -50,4 +51,6 @@ app.include_router(OrderRouter, tags=["Orders"], prefix="/order")
 # app.include_router(AIRouter, tags=["AI"], prefix="/ai")
 app.include_router(CategoryRouter, tags=["Category"], prefix="/category")
 app.include_router(WishlistCartRouter, tags=["Wishlist & Cart"], prefix="/wishlist_cart")
+app.include_router(VoucherRouter, tags=["Voucher"], prefix="/voucher")
+
 # app.include_router(SeedRouter, tags=["Seed"], prefix="/seed")
