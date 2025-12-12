@@ -54,3 +54,5 @@ The final match score (0-100%) is a weighted average of two metrics:
 ## Future Improvements
 - **Vector Database**: For searching through thousands of resumes instantly using embeddings (e.g., FAISS or PGVector).
 - **Entity Recognition (NER)**: Training a custom Spacy model to extract "Years of Experience" or "University Names" more accurately.
+
+
