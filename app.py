@@ -11,7 +11,11 @@ from routes.category_router import router as CategoryRouter
 from routes.wishlist_cart import router as WishlistCartRouter
 from routes.voucher import router as VoucherRouter
 from routes.payment import router as PaymentRouter
+from routes.payment import router as PaymentRouter
 from routes.aiapi import router as AIRouter
+from routes.review import router as ReviewRouter
+from routes.analytics import router as AnalyticsRouter
+from routes.ai_shopping import router as AIShoppingRouter
 from fastapi.middleware.cors import CORSMiddleware
 # from routes.seed import router as SeedRouter
 
@@ -56,5 +60,8 @@ app.include_router(WishlistCartRouter, tags=["Wishlist & Cart"], prefix="/wishli
 app.include_router(VoucherRouter, tags=["Voucher"], prefix="/voucher")
 app.include_router(PaymentRouter, tags=["Payment"], prefix="/payment")
 app.include_router(AIRouter, tags=["AI"], prefix="/ai")
+app.include_router(ReviewRouter, tags=["Review"], prefix="/reviews")
+app.include_router(AnalyticsRouter, tags=["Analytics"], prefix="/analytics")
+app.include_router(AIShoppingRouter, tags=["AI Assistant"], prefix="/ai_shopping")
 
 # app.include_router(SeedRouter, tags=["Seed"], prefix="/seed")

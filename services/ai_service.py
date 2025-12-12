@@ -9,14 +9,18 @@ import google.generativeai as genai
 import openai
 from transformers import pipeline, BertTokenizer, BertModel, BertForQuestionAnswering
 from routes.templates import template
+from config.config import Settings
+
 
 # Configuration
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "routes", "data")
 
-# API Keys (Should be moved to .env)
+# API Keys
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-GEMINI_API_KEY = "AIzaSyC4wPorehJw5_dOKR5DVFrEMOuKIb1_jD0" # TODO: Move to .env
+# Try getting from env, fallback to hardcoded if not present (to preserve existing functionality if .env not set) Settings().stripe_secret_key
+# GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyC4wPorehJw5_dOKR5DVFrEMOuKIb1_jD0")
+GEMINI_API_KEY = Settings().gemini_api_key
 
 genai.configure(api_key=GEMINI_API_KEY)
 if OPENAI_API_KEY:
@@ -221,8 +225,8 @@ def get_answer_without_model():
     # Since it's just random data generation for demo:
     random_answers = [f"Random Answer {i}" for i in range(len(questions))] # simplified
 
-    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-    model = BertForQuestionAnswering.from_pretrained('bert-large-uncased-whole-word-masking-finetuned-squad')
+    # tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+    # model = BertForQuestionAnswering.from_pretrained('bert-large-uncased-whole-word-masking-finetuned-squad')
 
     # ... logic using model ...
     # Original code iterates and runs model
@@ -289,3 +293,31 @@ def generate_will_gpt(data: list, model_name="gpt-3.5-turbo"):
         ]
     )
     return response.choices[0].message['content']
+
+# --- New Shopping Assistant ---
+
+def get_shopping_assistant_response(user_query: str):
+    """
+    Uses Gemini to provide a shopping assistant experience.
+    """
+    try:
+        # Using the recommended model for speed and general intelligence
+        model = genai.GenerativeModel('gemini-2.5-flash') 
+        
+        system_prompt = (
+            "You are a helpful and knowledgeable AI Shopping Assistant for a fashion e-commerce store. "
+            "Help the user find products, suggestions, or advice. "
+            "If the user asks for products, suggest generic terms they can search for if you don't have catalog access, "
+            "or just give fashion advice. "
+            "Be concise and friendly.\n\n"
+        )
+        
+        full_prompt = f"{system_prompt}User Query: {user_query}\nAnswer:"
+        
+        # This is where the error 429 occurs due to quota limits
+        response = model.generate_content(full_prompt) 
+        return response.text
+    except Exception as e:
+        # This will catch the 429 error, which should disappear after your quota resets/is increased.
+        return f"I'm having trouble thinking right now. Error: {str(e)}"
+

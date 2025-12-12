@@ -44,7 +44,7 @@ async def user_login(user_credentials: UserSignIn = Body(...)):
         del user_data["password"]
 
     return {
-        "access_token": sign_jwt(user_exists.email),
+        "access_token": sign_jwt(user_exists.email)["access_token"],
         "user": user_data,
         "status":200
     }
@@ -123,7 +123,7 @@ async def user_signup(user_payload: dict = Body(...)):
 
     # Return created user without password
     created_data = jsonable_encoder(created)
-    access_token = sign_jwt(created.email)
+    access_token = sign_jwt(created.email)["access_token"]
     created_data.pop("password", None)
     created_data["access_token"] = access_token
     return JSONResponse(status_code=200, content=created_data)
