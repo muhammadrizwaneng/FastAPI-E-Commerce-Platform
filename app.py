@@ -12,11 +12,11 @@ from routes.wishlist_cart import router as WishlistCartRouter
 from routes.voucher import router as VoucherRouter
 from routes.payment import router as PaymentRouter
 from routes.payment import router as PaymentRouter
-from routes.aiapi import router as AIRouter
+# from routes.aiapi import router as AIRouter
 from routes.review import router as ReviewRouter
 from routes.analytics import router as AnalyticsRouter
 from routes.ai_shopping import router as AIShoppingRouter
-from routes.recruitment_buddy import router as RecruitmentBuddyRouter
+# from routes.recruitment_buddy import router as RecruitmentBuddyRouter
 from fastapi.middleware.cors import CORSMiddleware
 # from routes.seed import router as SeedRouter
 
