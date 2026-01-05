@@ -15,6 +15,7 @@ async def user_update_password(email: str, hashed_password: str):
     return user
 
 async def find_user_by_email(email: str):
+    print('===================', email)
     user_data = await User.find_one({"email": email}) 
     return user_data 
 
